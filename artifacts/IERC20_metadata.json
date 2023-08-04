@@ -124,45 +124,6 @@
 			},
 			{
 				"inputs": [],
-				"name": "decimals",
-				"outputs": [
-					{
-						"internalType": "uint8",
-						"name": "",
-						"type": "uint8"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"inputs": [],
-				"name": "name",
-				"outputs": [
-					{
-						"internalType": "string",
-						"name": "",
-						"type": "string"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"inputs": [],
-				"name": "symbol",
-				"outputs": [
-					{
-						"internalType": "string",
-						"name": "",
-						"type": "string"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"inputs": [],
 				"name": "totalSupply",
 				"outputs": [
 					{
@@ -241,7 +202,7 @@
 	},
 	"settings": {
 		"compilationTarget": {
-			"IERC20Metadata.sol": "IERC20Metadata"
+			"IERC20.sol": "IERC20"
 		},
 		"evmVersion": "paris",
 		"libraries": {},
@@ -261,14 +222,6 @@
 			"urls": [
 				"bzz-raw://8b1427f8fec1ab8f805a9272515c16623dc4579a30c65332cabfc7bf42a9b619",
 				"dweb:/ipfs/QmacanLNU81f1Ng3G5pf96sP1GXTExTHrTzfZvzhxHowNw"
-			]
-		},
-		"IERC20Metadata.sol": {
-			"keccak256": "0x5cd4c0bc4b9f9503618498a1c3a3112484c9a1e1f3bc09514e2abd8ee78537c2",
-			"license": "MIT",
-			"urls": [
-				"bzz-raw://2b96ed92dcfbc3d188df96156c4b889bd4e9bda82ac82750c244bed838f8dab7",
-				"dweb:/ipfs/QmXRyc9ucbjKizzpjvdyyZJpxHPqQSA9PexUH8onKT9fx5"
 			]
 		}
 	},
