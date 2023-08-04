@@ -21,10 +21,10 @@ contract ERC20 is Context, IERC20, IERC20Metadata {
     constructor(
         string memory name_,
         string memory symbol_,
-        uint256 totalSupply_) {
+        uint256 initialSupply) {
         _name = name_;
         _symbol = symbol_;
-        _totalSupply = totalSupply_;
+        _mint(msg.sender, initialSupply);
     }
 
     //Token Name
@@ -54,8 +54,13 @@ contract ERC20 is Context, IERC20, IERC20Metadata {
 
     //Transfer Function
     function transfer(address to, uint256 amount) public virtual override returns (bool) {
-        address owner = _msgSender();
+        address owner = msg.sender;
+        require(to != msg.sender, "You cannot transfer token to your self");
+        require(amount <= _balances[owner], "You do not have sufficient tokens");
+        _balances[owner] -= amount;
+        _balances[to] += amount;
         _transfer(owner, to, amount);
+        _totalSupply -= amount;
         return true;
     }
 
@@ -66,7 +71,10 @@ contract ERC20 is Context, IERC20, IERC20Metadata {
 
     //Approve tokens to a particular account
     function approve(address spender, uint256 amount) public virtual override returns (bool) {
-        address owner = _msgSender();
+        address owner = msg.sender;
+        require(_balances[owner] >= amount, "You do not have sufficient tokens");
+        require(spender != msg.sender, "You cannot approve yourself");
+        
         _approve(owner, spender, amount);
         return true;
     }
@@ -77,7 +85,9 @@ contract ERC20 is Context, IERC20, IERC20Metadata {
         address to,
         uint256 amount
     ) public virtual override returns (bool) {
-        address spender = _msgSender();
+        address spender = msg.sender;
+        _balances[from] -= amount;
+        _balances[to] += amount;
         _spendAllowance(from, spender, amount);
         _transfer(from, to, amount);
         return true;
@@ -85,14 +95,17 @@ contract ERC20 is Context, IERC20, IERC20Metadata {
 
     //Increase the allowance given to a particular account
     function increaseAllowance(address spender, uint256 addedValue) public virtual returns (bool) {
-        address owner = _msgSender();
+        address owner = msg.sender;
+        require(_balances[owner] >= addedValue);
+        _balances[owner] -= addedValue;
         _approve(owner, spender, allowance(owner, spender) + addedValue);
         return true;
     }
 
     //Decrease the allowance given to a particular account
     function decreaseAllowance(address spender, uint256 subtractedValue) public virtual returns (bool) {
-        address owner = _msgSender();
+        address owner = msg.sender;
+        _balances[owner] += subtractedValue;
         uint256 currentAllowance = allowance(owner, spender);
         require(currentAllowance >= subtractedValue, "ERC20: decreased allowance below zero");
         unchecked {
@@ -102,7 +115,7 @@ contract ERC20 is Context, IERC20, IERC20Metadata {
         return true;
     }
 
-    //Transfer function
+    //Transfer function for Token owner only
     function _transfer(
         address from,
         address to,
@@ -125,7 +138,7 @@ contract ERC20 is Context, IERC20, IERC20Metadata {
         _afterTokenTransfer(from, to, amount);
     }
 
-    //Mint Token Function
+    //Mint Token Function for the deployer of the contract
     function _mint(address account, uint256 amount) internal virtual {
         require(account != address(0), "ERC20: mint to the zero address");
 
@@ -138,7 +151,7 @@ contract ERC20 is Context, IERC20, IERC20Metadata {
         _afterTokenTransfer(address(0), account, amount);
     }
 
-    //Burn Token Function
+    //Burn Token Function for the deployer of the contract
     function _burn(address account, uint256 amount) internal virtual {
         require(account != address(0), "ERC20: burn from the zero address");
 
@@ -156,7 +169,7 @@ contract ERC20 is Context, IERC20, IERC20Metadata {
         _afterTokenTransfer(account, address(0), amount);
     }
 
-    //Approve function
+    //Approve function for the deployer of the contract
     function _approve(
         address owner,
         address spender,
@@ -169,7 +182,7 @@ contract ERC20 is Context, IERC20, IERC20Metadata {
         emit Approval(owner, spender, amount);
     }
 
-    //Spend allowance given
+    //Spend allowance given for the deployer of the contract
     function _spendAllowance(
         address owner,
         address spender,
